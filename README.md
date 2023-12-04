@@ -28,7 +28,7 @@ my_ode = lambda y, x: -x + a*y + x**2 * y
 # Plot the vector field
 vectorfield(my_ode, y_min=0, y_max=2.5, y_step=0.1, x_min=0, x_max=2.5, x_step=0.1,
             title="$y(x)'= -x + a \cdot y + x^2 \cdot y$" , vector_scale=.1,
-            plot_root=True, xlabel='X-axis', ylabel='Y-axis', show=False)
+            plot_root=True, xlabel='X-axis', ylabel='Y-axis', show=True)
 
 ```
 ![Vectorfield](https://github.com/LucasMaul/vectorfields/blob/main/example1.png)
