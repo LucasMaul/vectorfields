@@ -28,7 +28,7 @@ my_ode = lambda y, x: -x + a*y + x**2 * y
 # Plot the vector field
 vectorfield(my_ode, y_min=0, y_max=2.5, y_step=0.1, x_min=0, x_max=2.5, x_step=0.1,
             title="$y(x)'= -x + a \cdot y + x^2 \cdot y$" , vector_scale=.1,
-            plot_root=True, xlabel='X-axis', ylabel='Y-axis', show=True)
+            plot_root=True, xlabel='X-axis', ylabel='Y-axis', show=True, color='b')
 
 ```
 ![Vectorfield](https://github.com/LucasMaul/vectorfields/blob/main/example1.png)
@@ -88,7 +88,7 @@ vectorfield(function1, vector_scale=0.2,
             x_min=-1, x_max=3, x_step=0.25,
             y_min=-1, y_max=3, y_step=0.25,
             xlabel='t', ylabel='x', plot_root=True,
-            title="$x'(t)=t \\cdot x(t)$")
+            title="$x'(t)=t \\cdot x(t)$", color='b')
 
 a1 = euler_method(function1, step_h=0.4, initial_x=0, initial_y=0.1, approx_x=2, plot=True, label='h=0.4')
 a2 = euler_method(function1, step_h=0.2, initial_x=0, initial_y=0.1, approx_x=2, plot=True, label='h=0.2')

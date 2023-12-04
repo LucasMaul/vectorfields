@@ -8,7 +8,7 @@ def vectorfield(function_of_xy,
                 x_min=-5, x_max=5, x_step=1,
                 xlabel=None, ylabel=None,
                 vector_scale=1, plot_root=False, root_size=0.1,
-                show=False, title=None):
+                show=False, title=None, **kwargs):
     """
     Plot a vector field representing the normalized gradient vectors of a given function.
 
@@ -41,6 +41,9 @@ def vectorfield(function_of_xy,
     title : str, optional
         Title for the plot. If None, the function source code is used as the title.
 
+    **kwargs : additional keyword arguments
+        Additional keyword arguments to be passed to the `quiver` function for customizing vector properties.
+
     Returns:
     -------
     None
@@ -51,12 +54,12 @@ def vectorfield(function_of_xy,
     import matplotlib.pyplot as plt
 
     # Define a vector field function
-    my_vector_field = lambda y,x: x**2 - y**2, 2*x*y
+    my_vector_field = lambda y, x: x**2 - y**2, 2*x*y
 
     # Plot the vector field
     vectorfield(my_vector_field, x_min=-3, x_max=3, y_min=-3, y_max=3,
                 xlabel='X-axis', ylabel='Y-axis', vector_scale=0.5,
-                plot_root=True, show=True, title='My Vector Field')
+                plot_root=True, show=True, title='My Vector Field', color='green', linewidth=1.5)
     """
     # ... (rest of the function implementation)
     
@@ -78,7 +81,7 @@ def vectorfield(function_of_xy,
     ax.grid(True, zorder=1, linestyle='dotted')
     if plot_root:
         ax.scatter(x, y, color='r', s=root_size)
-    ax.quiver(x_root, y_root, u_normalized, v_normalized, angles='xy', scale_units='xy', scale=1/vector_scale, color='b', width=2/10**3, zorder=2)
+    ax.quiver(x_root, y_root, u_normalized, v_normalized, angles='xy', scale_units='xy', scale=1/vector_scale, width=2/10**3, zorder=2, **kwargs)
 
     # defining windows size
     window_x_min, window_x_max = x_min - x_step, x_max + x_step
@@ -177,6 +180,12 @@ def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
 
 if __name__ == '__main__':
     func = lambda t, x: np.cos(t + x) + np.sin(t - x)
-    vectorfield(func, show=False, title="$x'(t)=t \\cdot x(t)$", xlabel='t', ylabel='x', vector_scale=0.5)
-    euler_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=0, approx_x=1, plot=True, show=True, color='r')
+    vectorfield(func,
+                x_min=-np.pi,x_max=np.pi, x_step=np.pi/16,
+                y_min=-np.pi, y_max=np.pi, y_step=np.pi/16,
+                title="$x'(t)=t \\cdot x(t)$", xlabel='t', ylabel='x',
+                vector_scale=0.2, color='b',
+                show=False, plot_root=True)
+    euler_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=0, approx_x=1, plot=True, show=False, color='r')
+    plt.show()
     
