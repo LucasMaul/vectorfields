@@ -79,9 +79,9 @@ def vectorfield(function_of_xy,
     fig, ax = plt.subplots()
 
     ax.grid(True, zorder=1, linestyle='dotted')
+    ax.quiver(x_root, y_root, u_normalized, v_normalized, angles='xy', scale_units='xy', scale=1/vector_scale, width=2/10**3, zorder=2, **kwargs)
     if plot_root:
         ax.scatter(x, y, color='r', s=root_size)
-    ax.quiver(x_root, y_root, u_normalized, v_normalized, angles='xy', scale_units='xy', scale=1/vector_scale, width=2/10**3, zorder=2, **kwargs)
 
     # defining windows size
     window_x_min, window_x_max = x_min - x_step, x_max + x_step
@@ -247,6 +247,8 @@ def heuns_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
         y += h
         x += step_h
 
+    iteration_list.loc[len(iteration_list)] = [k, x, y, k_1, k_2, h]
+
     if plot:
         fig, ax = plt.gcf(), plt.gca()
         ax.plot(iteration_list['x_k'], iteration_list['y_k'], **kwagrs)
@@ -268,12 +270,17 @@ if __name__ == '__main__':
     # euler_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=0, approx_x=1, plot=True, show=False, color='r')
     # plt.show()
     func = lambda t, x: t - x
-    a1 = heuns_method(function_of_xy=func, step_h=0.1  , initial_x=0, initial_y=1, approx_x=2, plot=True)
-    a2 = heuns_method(function_of_xy=func, step_h=0.01 , initial_x=0, initial_y=1, approx_x=2, plot=True)
-    a3 = heuns_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=1, approx_x=2, plot=True)
 
-    print(a1.tail())
-    print(a2.tail())
-    print(a3.tail())
+
+    vectorfield(func,
+                x_min=-0.25, x_max=2.25, x_step=0.1,
+                y_min=0.5, y_max=1.5, y_step=0.1,
+                plot_root=True, root_size=3, show=False,
+                xlabel='t', ylabel='x', title="$x'(t) = t - x$",
+                vector_scale=0.07, color='b')
+
+    a3 = heuns_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=1, approx_x=2, plot=True, show=False, color='g')
 
     plt.show()
+
+    print(a3.tail())
