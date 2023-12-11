@@ -178,14 +178,102 @@ def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
 
     return iteration_list
 
+def heuns_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=False, show=False, **kwagrs):
+    """
+    Apply Heun's method to numerically solve a first-order ordinary differential equation (ODE).
+
+    Parameters
+    ----------
+    function_of_xy : callable
+        A function representing the ODE, accepting x and y as arguments.
+    step_h : float
+        Step size for the numerical integration.
+    initial_x : float
+        Initial value of the independent variable.
+    initial_y : float
+        Initial value of the dependent variable.
+    approx_x : float
+        Value of the independent variable where the solution is approximated.
+    plot : bool, optional
+        If True, plot the numerical solution. Default is False.
+    show : bool, optional
+        If True and plot is True, display the plot. Default is False.
+    **kwargs
+        Additional keyword arguments for customizing the plot.
+
+    Returns
+    -------
+    pandas.DataFrame
+        DataFrame containing the iteration history with columns ['k', 'x_k', 'y_k', 'k_1', 'k_2', 'h/2*(k_1 + k_2)'].
+
+    Example
+    -------
+    import matplotlib.pyplot as plt
+
+    # Define the ODE dy/dx = x + y
+    lamda x, y: x + y
+
+    # Set initial conditions and parameters
+    initial_x_value = 0
+    initial_y_value = 1
+    step_size = 0.1
+    target_x_value = 2
+
+    # Apply Heun's method
+    iteration_results = heuns_method(
+        function_of_xy=ode_function,
+        step_h=step_size,
+        initial_x=initial_x_value,
+        initial_y=initial_y_value,
+        approx_x=target_x_value,
+        plot=True,
+        show=True,
+        label='Heun\'s Method'
+    )
+
+    print(iteration_results)
+    """
+    iteration_list = pd.DataFrame({'k':[], 'x_k':[], 'y_k':[], 'k_1':[], 'k_2':[], 'h/2*(k_1 + k_2)':[]})
+    k = 0
+    x = initial_x
+    y = initial_y
+    while x <= approx_x:
+        f = (function_of_xy)(x, y)
+        k_1 = f
+        k_2 = (function_of_xy)(x + step_h, y + step_h * k_1)
+        h = step_h / 2 * (k_1 + k_2)
+        iteration_list.loc[len(iteration_list)] = [k, x, y, k_1, k_2, h]
+        k += 1
+        y += h
+        x += step_h
+
+    if plot:
+        fig, ax = plt.gcf(), plt.gca()
+        ax.plot(iteration_list['x_k'], iteration_list['y_k'], **kwagrs)
+
+        if show:
+            plt.show()
+
+    return iteration_list
+
+
 if __name__ == '__main__':
-    func = lambda t, x: np.cos(t + x) + np.sin(t - x)
-    vectorfield(func,
-                x_min=-np.pi,x_max=np.pi, x_step=np.pi/16,
-                y_min=-np.pi, y_max=np.pi, y_step=np.pi/16,
-                title="$x'(t)=t \\cdot x(t)$", xlabel='t', ylabel='x',
-                vector_scale=0.2, color='b',
-                show=False, plot_root=True)
-    euler_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=0, approx_x=1, plot=True, show=False, color='r')
+    # func = lambda t, x: np.cos(t + x) + np.sin(t - x)
+    # vectorfield(func,
+    #             x_min=-np.pi,x_max=np.pi, x_step=np.pi/16,
+    #             y_min=-np.pi, y_max=np.pi, y_step=np.pi/16,
+    #             title="$x'(t)=t \\cdot x(t)$", xlabel='t', ylabel='x',
+    #             vector_scale=0.2, color='b',
+    #             show=False, plot_root=True)
+    # euler_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=0, approx_x=1, plot=True, show=False, color='r')
+    # plt.show()
+    func = lambda t, x: t - x
+    a1 = heuns_method(function_of_xy=func, step_h=0.1  , initial_x=0, initial_y=1, approx_x=2, plot=True)
+    a2 = heuns_method(function_of_xy=func, step_h=0.01 , initial_x=0, initial_y=1, approx_x=2, plot=True)
+    a3 = heuns_method(function_of_xy=func, step_h=0.001, initial_x=0, initial_y=1, approx_x=2, plot=True)
+
+    print(a1.tail())
+    print(a2.tail())
+    print(a3.tail())
+
     plt.show()
-    
