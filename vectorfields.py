@@ -110,7 +110,7 @@ def vectorfield(function_of_xy,
         plt.show()
 
 
-def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=False, show=False, **kwagrs):
+def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=False, show=False, precision=None, **kwagrs):
     """
     Numerically solve a first-order ordinary differential equation (ODE) using the Euler method.
 
@@ -130,6 +130,8 @@ def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
         If True, plot the solution. Default is False.
     show : bool, optional
         If True and plot is True, display the plot. Default is False.
+    precision : int, optional
+        Number of decimal places to display in the output DataFrame. Default is None.
     **kwargs
         Additional keyword arguments to be passed to the plot function.
 
@@ -148,7 +150,7 @@ def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
     >>> lambda x, y: np.cos(x + y) + np.sin(x - y)
     >>>
     >>> # Solve the ODE using the Euler method
-    >>> result = euler_method(ode_function, 0.1, 0, 1, 2, plot=True, show=True, color='b', label='Euler Method')
+    >>> result = euler_method(ode_function, 0.1, 0, 1, 2, plot=True, show=True, precision=3, color='b', label='Euler Method')
     >>> print(result)
        k  x_k       y_k  f(x_k, y_k)  h*f(x_k, y_k)
     0  0  0.0  1.000000         1.0            0.1
@@ -157,6 +159,11 @@ def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
     ...
     20 20  2.0  6.727500         3.0            0.3
     """
+    if precision is not None:
+        pd.set_option('display.precision', precision)
+    else:
+        pd.reset_option()
+
     iteration_list = pd.DataFrame({'k':[], 'x_k':[], 'y_k':[], 'f(x_k, y_k)':[], 'h*f(x_k, y_k)':[]})
     k = 0
     x = initial_x
@@ -178,7 +185,7 @@ def euler_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
 
     return iteration_list
 
-def heuns_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=False, show=False, **kwagrs):
+def heuns_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=False, show=False, precision=None, **kwagrs):
     """
     Apply Heun's method to numerically solve a first-order ordinary differential equation (ODE).
 
@@ -198,6 +205,8 @@ def heuns_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
         If True, plot the numerical solution. Default is False.
     show : bool, optional
         If True and plot is True, display the plot. Default is False.
+    precision : int, optional
+        Number of decimal places to display in the output DataFrame. Default is None.
     **kwargs
         Additional keyword arguments for customizing the plot.
 
@@ -228,11 +237,17 @@ def heuns_method(function_of_xy, step_h, initial_x, initial_y, approx_x, plot=Fa
         approx_x=target_x_value,
         plot=True,
         show=True,
+        precision=3,  # Adjust precision as needed
         label='Heun\'s Method'
     )
 
     print(iteration_results)
     """
+    if precision is not None:
+        pd.set_option('display.precision', precision)
+    else:
+        pd.reset_option('all')
+
     iteration_list = pd.DataFrame({'k':[], 'x_k':[], 'y_k':[], 'k_1':[], 'k_2':[], 'h/2*(k_1 + k_2)':[]})
     k = 0
     x = initial_x
